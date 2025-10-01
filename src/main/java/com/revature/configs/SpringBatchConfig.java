@@ -4,11 +4,10 @@ import com.revature.entities.User;
 import com.revature.repositories.UserRepository;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.listener.StepExecutionListenerSupport;
-import org.springframework.batch.core.listener.StepListenerSupport;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemWriter;
@@ -24,7 +23,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.Map;
 
 @Configuration
-@EnableBatchProcessing
 public class SpringBatchConfig {
 
     private final JobRepository jobRepository;
@@ -44,6 +42,7 @@ public class SpringBatchConfig {
     public Job userReportJob(Step updateUsersStep) {
         System.out.println("Starting userReportJob");
         return new JobBuilder("userReportJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
                 .start(updateUsersStep)
                 .build();
     }
@@ -76,7 +75,7 @@ public class SpringBatchConfig {
 
     @Bean
     @StepScope
-    public JpaPagingItemReader<User> userReader(@Value("#{jobParameters['year']") String year) {
+    public JpaPagingItemReader<User> userReader(@Value("#{jobParameters['year']}") String year) {
         System.out.println("Starting ItemReader");
         System.out.println("For year: " + year);
         if(year == null || year.isBlank()) {
@@ -86,9 +85,9 @@ public class SpringBatchConfig {
         return new JpaPagingItemReaderBuilder<User>()
                 .name("userReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("SELECT u FROM User u WHERE u.year = :year")
+                .queryString("SELECT u FROM User u WHERE u.year = :year ORDER BY u.id")
                 .parameterValues(Map.of("year", year))
-                .pageSize(2)
+                .pageSize(10)
                 .build();
     }
 
