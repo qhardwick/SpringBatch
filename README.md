@@ -6,6 +6,7 @@ Example of a simple Spring Batch implementation to be used as a reference for mo
 ## Technologies Used
 ![](https://img.shields.io/badge/-Java-007396?style=flat-square&logo=java&logoColor=white)
 ![](https://img.shields.io/badge/-Spring_Boot-6DB33F?style=flat-square&logo=spring-boot&logoColor=white)
+![](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![Maven](https://img.shields.io/badge/-Maven-C71A36?style=flat-square&logo=apache-maven&logoColor=white)
 
 
