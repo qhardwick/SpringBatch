@@ -1,17 +1,12 @@
 package com.revature.controllers;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/jobs")
@@ -21,7 +16,7 @@ public class JobController {
     private final Job userReportJob;
 
     @Autowired
-    public JobController(JobLauncher jobLauncher, Job userReportJob) {
+    public JobController(@Qualifier("asyncJobLauncher") JobLauncher jobLauncher, Job userReportJob) {
         this.jobLauncher = jobLauncher;
         this.userReportJob = userReportJob;
     }
@@ -31,12 +26,14 @@ public class JobController {
         return "Hello Job Controller";
     }
 
-    @GetMapping("/{year}")
-    public JobExecution runUserReportJobForYear(@PathVariable("year") String year) throws Exception {
+    @GetMapping(path = "/user-report-job", params = "year")
+    public String runUserReportJobForYear(@RequestParam("year") String year) throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
-                .addString("year", year)  // Wraps as JobParameter<String>
-                .addLong("run.id", System.currentTimeMillis())  // Ensures unique job instance
+                .addString("year", year)
+                .addLong("run.id", System.currentTimeMillis())
                 .toJobParameters();
-        return jobLauncher.run(userReportJob, jobParameters);
+        jobLauncher.run(userReportJob, jobParameters);
+
+        return "Starting User Report job for: " + year;
     }
 }
