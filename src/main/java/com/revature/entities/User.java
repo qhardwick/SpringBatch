@@ -14,8 +14,12 @@ public class User {
 
     private String username;
 
+    // Year is typically an int but I am using String here to more closely match what I need for
+    // the project where I am actually implementing Spring Batch:
     private String year;
 
+    // @Data should provide all of these, but for whatever reason the IntelliJ compiler has no problem with the compile-time
+    // generation until it actually tries to compile:
     public Long getId() {
         return id;
     }

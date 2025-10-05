@@ -34,7 +34,7 @@ public class StepConfig {
     }
 
     @Bean(name = "updateUsersStep")
-    public Step updateUsersStep(JpaPagingItemReader<User> userReader, ItemProcessor<User, User> userProcessor, ItemWriter<User> userWriter, JobRepository jobRepository) {
+    public Step updateUsersStep(JpaPagingItemReader<User> userReader, ItemProcessor<User, User> userProcessor, ItemWriter<User> userWriter) {
         return new StepBuilder("updateUsersStep", jobRepository)
                 .<User, User>chunk(10, transactionManager)
                 .reader(userReader)
@@ -74,6 +74,6 @@ public class StepConfig {
     // chunk is how many you process for each commit:
     @Bean
     public ItemWriter<User> userWriter(UserRepository userRepository) {
-        return users -> userRepository.saveAll(users.getItems());
+        return userRepository::saveAll;
     }
 }
