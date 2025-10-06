@@ -14,4 +14,4 @@ Example of a simple Spring Batch implementation to be used as a reference for mo
 * Utilizes an async JobLauncher to acknowledge request immediately without having to wait for long-running batch process to complete.
 * Implements JPA paging item reader to process data in manageable chunks.
 * Automatic retry logic for recoverable exceptions.
-* Simple. Easy to understand but more meaningful and extendible than a "Hello" application.
+* Simple. Easy to understand but more meaningful and extensible than a "Hello" application.
